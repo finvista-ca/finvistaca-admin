@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { AuthService } from "@/services/auth.service";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/app-sidebar";
@@ -13,6 +13,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
@@ -21,7 +22,7 @@ export default function AdminLayout({
     } else {
       setTimeout(() => setIsAuthorized(true), 0);
     }
-  }, [router]);
+  }, [router, pathname]);
 
   if (!isAuthorized) {
     return <div className="min-h-screen bg-background" />; // Optional: Add a nice full-page loader here

@@ -27,12 +27,8 @@ api.interceptors.response.use(
     return response;
   },
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("finvista_admin_token");
-        window.location.href = "/login";
-      }
-    }
+    // We purposefully do not clear localStorage on 401 here anymore, 
+    // to prevent the session from being destroyed if a specific endpoint fails.
     return Promise.reject(error);
   }
 );
