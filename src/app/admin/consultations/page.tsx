@@ -169,13 +169,14 @@ export default function ConsultationsPage() {
       toast.error("No data to export.");
       return;
     }
-    const headers = ["Client Name", "Phone", "Service", "Preferred Date", "Preferred Time", "Booked On", "Status", "Message"];
+    const headers = ["Client Name", "Phone", "Branch", "Service", "Preferred Date", "Preferred Time", "Booked On", "Status", "Message"];
     const csvRows = [headers.join(",")];
     
     for (const row of filteredData) {
       const values = [
         `"${row.clientName || ""}"`,
         `"${row.phone || ""}"`,
+        `"${row.branch || ""}"`,
         `"${row.service || ""}"`,
         `"${row.date || ""}"`,
         `"${row.time || ""}"`,
@@ -406,11 +407,11 @@ export default function ConsultationsPage() {
           </Select>
           <div className="relative w-full lg:w-[150px]">
              <Input 
-              type="date"
-              className="bg-background w-full"
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              title="Filter by Preferred Date"
+             type="date"
+             className="bg-background w-full"
+             value={dateFilter}
+             onChange={(e) => setDateFilter(e.target.value)}
+             title="Filter by Preferred Date"
             />
           </div>
           <Select value={sortOrder} onValueChange={(v) => setSortOrder((v || "newest") as any)}>
@@ -457,6 +458,7 @@ export default function ConsultationsPage() {
                 <TableRow className="bg-muted/30">
                   <TableHead>Client</TableHead>
                   <TableHead>Phone</TableHead>
+                  <TableHead>Branch</TableHead>
                   <TableHead>Service</TableHead>
                   <TableHead>Preferred Date</TableHead>
                   <TableHead>Preferred Time</TableHead>
@@ -470,6 +472,9 @@ export default function ConsultationsPage() {
                   <TableRow key={row.id || row._id || index}>
                     <TableCell className="font-medium">{row.clientName}</TableCell>
                     <TableCell>{row.phone}</TableCell>
+                    <TableCell>
+                      <BranchBadge branch={row.branch} />
+                    </TableCell>
                     <TableCell className="max-w-[150px] truncate" title={row.service}>{row.service}</TableCell>
                     <TableCell>{formatDate(row.date)}</TableCell>
                     <TableCell>{row.time}</TableCell>
@@ -499,6 +504,10 @@ export default function ConsultationsPage() {
                       <p className="text-sm text-muted-foreground">{row.phone}</p>
                     </div>
                     <StatusBadge status={row.status} />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">Branch:</span>
+                    <BranchBadge branch={row.branch} />
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-sm bg-muted/30 p-3 rounded-lg border">
                     <div>
