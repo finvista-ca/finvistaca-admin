@@ -55,7 +55,6 @@ const bulkMessagesNav = {
 
 const otherNavItems = [
   { title: "Career Applications", url: "/admin/careers", icon: Briefcase },
-  { title: "Contact Enquiries", url: "/admin/enquiries", icon: Mail },
   { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
 
