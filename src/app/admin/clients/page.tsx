@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { BranchBadge } from "@/components/ui/branch-badge";
 
 export default function ClientsPage() {
   const queryClient = useQueryClient();
@@ -202,7 +203,7 @@ export default function ClientsPage() {
                       </div>
                       <div className="flex justify-between text-muted-foreground text-xs">
                         <span>{new Date(consultation.date).toLocaleDateString()}</span>
-                        <span>{consultation.branch}</span>
+                        <BranchBadge branch={consultation.branch} />
                       </div>
                     </div>
                   ))}

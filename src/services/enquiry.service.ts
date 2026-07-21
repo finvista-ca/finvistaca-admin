@@ -14,8 +14,27 @@ export interface ContactEnquiry {
 
 export const EnquiryService = {
   getAll: async (): Promise<ContactEnquiry[]> => {
-    const response = await api.get("/api/admin/enquiries");
-    return response.data?.enquiries || response.data || [];
+    try {
+      const response = await api.get("/api/admin/enquiries");
+      const data = response.data;
+      
+      if (Array.isArray(data)) {
+        return data;
+      }
+      if (data && Array.isArray(data.enquiries)) {
+        return data.enquiries;
+      }
+      if (data && Array.isArray(data.data)) {
+        return data.data;
+      }
+      return [];
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        console.warn("Enquiries API not implemented yet, returning empty array.");
+        return [];
+      }
+      throw error;
+    }
   },
 
   updateStatus: async (id: string, status: ContactEnquiry["status"]): Promise<void> => {

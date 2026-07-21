@@ -21,12 +21,12 @@ export interface Client {
 
 export const ClientService = {
   getAll: async (): Promise<Client[]> => {
-    const response = await api.get("/api/admin/patients");
+    const response = await api.get("/api/admin/clients");
     return response.data?.patients || response.data || [];
   },
 
   updateDoNotContact: async (id: string, doNotContact: boolean): Promise<void> => {
-    // According to the prompt: PATCH /api/admin/patients
-    await api.patch("/api/admin/patients", { id, doNotContact });
+    // According to the prompt: PATCH /api/admin/clients
+    await api.patch("/api/admin/clients", { id, doNotContact });
   }
 };

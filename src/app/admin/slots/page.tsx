@@ -37,15 +37,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { BranchBadge } from "@/components/ui/branch-badge";
 
-const BRANCHES = [
-  "Parvathipuram",
-  "Vijayawada",
-  "Visakhapatnam",
-  "Bobbili",
-  "Peddapuram",
-  "Rayagada (Odisha)"
-];
+import { BRANCHES } from "@/lib/constants";
 
 export default function SlotManagerPage() {
   const queryClient = useQueryClient();
@@ -127,7 +121,9 @@ export default function SlotManagerPage() {
             </SelectTrigger>
             <SelectContent>
               {BRANCHES.map(b => (
-                <SelectItem key={b} value={b}>{b}</SelectItem>
+                <SelectItem key={b} value={b}>
+                  {b === "Vijayawada" ? "Vijayawada (Head Office)" : b}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -191,8 +187,8 @@ export default function SlotManagerPage() {
           <Card className="shadow-sm min-h-[600px]">
             <CardHeader>
               <CardTitle>Daily Slots Overview</CardTitle>
-              <CardDescription>
-                {date ? format(date, "EEEE, MMMM do, yyyy") : "Select a date"} • {branch}
+              <CardDescription className="flex items-center gap-2 mt-1">
+                {date ? format(date, "EEEE, MMMM do, yyyy") : "Select a date"} • <BranchBadge branch={branch} className="inline-flex" />
               </CardDescription>
             </CardHeader>
             <CardContent>

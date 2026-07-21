@@ -19,7 +19,7 @@ export default function SettingsPage() {
     companyName: "Finvista Chartered Accountants",
     supportPhone: "+91 9876543210",
     supportEmail: "support@finvista.in",
-    officeAddresses: "Visakhapatnam, Andhra Pradesh\nVijayawada, Andhra Pradesh",
+    officeAddresses: "Vijayawada, Andhra Pradesh (Head Office)\nKakinada, Andhra Pradesh\nVisakhapatnam, Andhra Pradesh\nParvathipuram, Andhra Pradesh\nBobbili, Andhra Pradesh\nPeddapuram, Andhra Pradesh\nHyderabad, Telangana\nOdisha",
   });
 
   // WhatsApp settings state

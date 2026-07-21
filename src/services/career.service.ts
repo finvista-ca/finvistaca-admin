@@ -15,8 +15,16 @@ export interface CareerApplication {
 
 export const CareerService = {
   getAll: async (): Promise<CareerApplication[]> => {
-    const response = await api.get("/api/admin/careers");
-    return response.data?.careers || response.data || [];
+    try {
+      const response = await api.get("/api/admin/careers");
+      return response.data?.careers || response.data || [];
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        console.warn("Careers API not implemented yet, returning empty array.");
+        return [];
+      }
+      throw error;
+    }
   },
 
   updateStatus: async (id: string, status: CareerApplication["status"]): Promise<void> => {

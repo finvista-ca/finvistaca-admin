@@ -26,27 +26,16 @@ export default function LoginPage() {
     setIsLoading(true);
     
     try {
-      const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123";
-      
-      // Fallback check if no backend auth is implemented
-      if (password === adminPassword) {
-        if (typeof window !== "undefined") {
-          localStorage.setItem("finvista_admin_token", "temp_admin_token");
-        }
+      const success = await AuthService.login(password);
+      if (success) {
         toast.success("Login successful");
         router.push("/admin/dashboard");
       } else {
-        // Try backend auth just in case it's implemented
-        const success = await AuthService.login(password);
-        if (success) {
-          toast.success("Login successful");
-          router.push("/admin/dashboard");
-        } else {
-          toast.error("Invalid password. Use 'admin123'");
-        }
+        toast.error("Invalid admin password.");
       }
     } catch (error) {
-      toast.error("An error occurred during login");
+      console.error(error);
+      toast.error("Unable to sign in. Please try again.");
     } finally {
       setIsLoading(false);
     }

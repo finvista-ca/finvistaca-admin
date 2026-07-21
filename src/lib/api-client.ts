@@ -1,7 +1,8 @@
 import axios, { AxiosError } from "axios";
+import { toast } from "sonner";
 
 export const api = axios.create({
-  baseURL: "https://finvistaca-backend-ebon.vercel.app",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "",
   headers: {
     "Content-Type": "application/json",
   },
@@ -27,8 +28,15 @@ api.interceptors.response.use(
     return response;
   },
   (error: AxiosError) => {
-    // We purposefully do not clear localStorage on 401 here anymore, 
-    // to prevent the session from being destroyed if a specific endpoint fails.
+    if (error.response?.status === 401) {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("finvista_admin_token");
+        if (window.location.pathname !== "/login") {
+          toast.error("Your session has expired. Please sign in again.");
+          window.location.href = "/login";
+        }
+      }
+    }
     return Promise.reject(error);
   }
 );

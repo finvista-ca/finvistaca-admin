@@ -27,10 +27,12 @@ export default function EnquiriesPage() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [internalNotes, setInternalNotes] = useState("");
 
-  const { data = [], isLoading, isError, error } = useQuery({
+  const { data: rawData = [], isLoading, isError, error } = useQuery({
     queryKey: ["enquiries"],
     queryFn: EnquiryService.getAll
   });
+
+  const data = Array.isArray(rawData) ? rawData : [];
 
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: ContactEnquiry["status"] }) => 

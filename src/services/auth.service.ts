@@ -11,15 +11,19 @@ export const AuthService = {
         return true;
       }
       return false;
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.response?.status === 401 || error?.response?.status === 400) {
+        return false;
+      }
       console.error("Login failed:", error instanceof Error ? error.message : error);
-      return false;
+      throw error;
     }
   },
 
   logout: () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("finvista_admin_token");
+      window.location.href = "/login";
     }
   },
 
