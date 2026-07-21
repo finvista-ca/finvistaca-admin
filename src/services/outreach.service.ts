@@ -38,16 +38,18 @@ export const OutreachService = {
   },
 
   getCampaignHistory: async (): Promise<CampaignHistory[]> => {
-    // According to the prompt, Campaign history comes from GET /api/admin/stats
-    const response = await api.get("/api/admin/stats");
-    return response.data?.campaigns || [];
+    // Pointing directly to the dedicated history route we built
+    const response = await api.get("/api/admin/outreach/history");
+    return Array.isArray(response.data) ? response.data : response.data?.campaigns || [];
   },
 
   getDeliveryStatus: async (campaignId?: string): Promise<DeliveryStatus[]> => {
-    const endpoint = campaignId 
-      ? `/api/admin/outreach/delivery?campaignId=${campaignId}`
-      : `/api/admin/outreach/delivery`;
-    const response = await api.get(endpoint);
-    return response.data?.delivery || response.data || [];
+    // If no campaign is selected yet, return an empty array immediately without making a failing request
+    if (!campaignId) {
+      return [];
+    }
+
+    const response = await api.get(`/api/admin/outreach/delivery?campaignId=${campaignId}`);
+    return Array.isArray(response.data) ? response.data : response.data?.rows || [];
   }
 };
