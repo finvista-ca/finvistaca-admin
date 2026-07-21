@@ -19,10 +19,6 @@ export interface DashboardResponse {
       total_applications: number;
       new_applications: number;
     };
-    enquiries: {
-      total_enquiries: number;
-      new_enquiries: number;
-    };
   };
 }
 

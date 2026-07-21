@@ -3,18 +3,15 @@
 import { useQueries } from "@tanstack/react-query";
 import { DashboardService, DashboardResponse } from "@/services/dashboard.service";
 import { ConsultationService, Consultation } from "@/services/consultation.service";
-import { EnquiryService, ContactEnquiry } from "@/services/enquiry.service";
 import { StatsCard } from "@/components/cards/stats-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
   CalendarDays, 
   Clock, 
-  Mail,
   MessageSquare,
   AlertTriangle,
   ArrowRight,
-  Inbox,
   CalendarX,
   MessageCircleOff
 } from "lucide-react";
@@ -36,7 +33,6 @@ export default function DashboardPage() {
     queries: [
       { queryKey: ["dashboard-stats"], queryFn: DashboardService.getStats, retry: false },
       { queryKey: ["consultations"], queryFn: ConsultationService.getAll, retry: false },
-      { queryKey: ["enquiries"], queryFn: EnquiryService.getAll, retry: false },
     ]
   });
 
@@ -60,8 +56,8 @@ export default function DashboardPage() {
     return (
       <div className="space-y-6">
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
             <Skeleton key={i} className="h-32 w-full rounded-xl" />
           ))}
         </div>
@@ -74,9 +70,6 @@ export default function DashboardPage() {
   const statsData = (results[0].data as DashboardResponse | undefined);
   const rawConsultations = results[1].data;
   const consultations = Array.isArray(rawConsultations) ? rawConsultations : [];
-  
-  const rawEnquiries = results[2].data;
-  const enquiries = Array.isArray(rawEnquiries) ? rawEnquiries : [];
 
   if (isError && !statsData) {
     return (
@@ -113,14 +106,9 @@ export default function DashboardPage() {
 
   const todaysConsultations = consultations.filter(c => isToday(c.date)).length;
   const pendingConsultations = statsData?.dashboard?.consultations?.pending_consultations || 0;
-  const newEnquiries = statsData?.dashboard?.enquiries?.new_enquiries || 0;
   const campaignsSentToday = statsData?.campaigns?.filter(c => isToday(c.uploadDate)).length || 0;
 
   const recentConsultations = [...consultations]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 5);
-
-  const recentEnquiries = [...enquiries]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
 
@@ -140,10 +128,9 @@ export default function DashboardPage() {
       </div>
 
       {/* Row 1: Statistic Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-3">
         <StatsCard title="Today's Consultations" value={todaysConsultations} icon={CalendarDays} />
         <StatsCard title="Pending Consultations" value={pendingConsultations} icon={Clock} />
-        <StatsCard title="New Contact Enquiries" value={newEnquiries} icon={Mail} />
         <StatsCard title="Campaigns Sent Today" value={campaignsSentToday} icon={MessageSquare} />
       </div>
 
@@ -200,60 +187,7 @@ export default function DashboardPage() {
         </CardContent>
       </Card>
 
-      {/* Row 3: Recent Contact Enquiries */}
-      <Card className="shadow-sm">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>Recent Contact Enquiries</CardTitle>
-            <CardDescription>Latest 5 enquiries received</CardDescription>
-          </div>
-          <Link href="/admin/enquiries">
-            <Button variant="outline" size="sm" className="gap-2">
-              View All Enquiries <ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
-        </CardHeader>
-        <CardContent>
-          {recentEnquiries.length > 0 ? (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Subject</TableHead>
-                    <TableHead>Received Date</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentEnquiries.map((enquiry, i) => (
-                    <TableRow key={enquiry.id || enquiry._id || i}>
-                      <TableCell className="font-medium">{enquiry.name}</TableCell>
-                      <TableCell className="max-w-[200px] truncate" title={enquiry.message}>
-                        {enquiry.message}
-                      </TableCell>
-                      <TableCell>{formatDate(enquiry.date)}</TableCell>
-                      <TableCell>
-                        <StatusBadge status={enquiry.status} />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-16 text-muted-foreground bg-muted/10 rounded-xl border border-dashed gap-4">
-              <Inbox className="w-12 h-12 text-muted-foreground/50" />
-              <div className="text-center">
-                <p className="text-base font-medium text-foreground">No enquiries received yet.</p>
-                <p className="text-sm">New messages from the contact form will show up here.</p>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Row 4: Latest WhatsApp Campaign Summary */}
+      {/* Row 3: Latest WhatsApp Campaign Summary */}
       <Card className="shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
