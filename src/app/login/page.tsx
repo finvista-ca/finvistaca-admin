@@ -1,3 +1,5 @@
+// app/login/page.tsx
+
 "use client";
 
 import { useState } from "react";
@@ -45,7 +47,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-2 text-center pb-6">
-          <div className="mx-auto mb-4 flex justify-center w-24 h-24 rounded-2xl overflow-hidden bg-white shadow-sm border">
+          <div className="mx-auto mb-2 flex justify-center w-36 h-20 overflow-hidden">
             <img src="/finvista-logo.jpeg" alt="Finvista Logo" className="w-full h-full object-contain" />
           </div>
           <CardTitle className="text-2xl font-bold tracking-tight">Finvista Admin</CardTitle>

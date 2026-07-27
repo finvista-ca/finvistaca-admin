@@ -1,3 +1,5 @@
+// components/app-sidebar.tsx
+
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
@@ -72,12 +74,9 @@ export function AppSidebar() {
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader className="py-4">
         <div className="flex items-center gap-2 px-4">
-          <div className="w-8 h-8 rounded flex items-center justify-center overflow-hidden bg-white">
+          <div className="w-36 h-10 overflow-hidden flex items-center justify-start">
             <img src="/finvista-logo.jpeg" alt="Finvista" className="w-full h-full object-contain" />
           </div>
-          <span className="font-bold text-lg tracking-tight group-data-[collapsible=icon]:hidden">
-            Finvista Admin
-          </span>
         </div>
       </SidebarHeader>
       
