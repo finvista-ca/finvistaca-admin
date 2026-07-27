@@ -1,3 +1,5 @@
+// app/admin/outreach/upload/page.tsx
+
 "use client";
 
 import { useState, useCallback } from "react";
@@ -64,9 +66,19 @@ export default function UploadCampaignPage() {
 
     try {
       await OutreachService.uploadCampaign(file, selectedTemplate);
+      
+      // Instantly trigger backend processor queue right after upload
+      try {
+        await fetch('/api/outreach/send?secret=development_cron_bypass', {
+          method: 'POST',
+        });
+      } catch (triggerErr) {
+        console.error("Background trigger warning:", triggerErr);
+      }
+
       clearInterval(interval);
       setUploadProgress(100);
-      toast.success("Campaign queued successfully!");
+      toast.success("Campaign queued and sent successfully!");
       
       setTimeout(() => {
         router.push("/admin/outreach/history");
