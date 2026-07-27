@@ -24,9 +24,10 @@ export interface DeliveryStatus {
 }
 
 export const OutreachService = {
-  uploadCampaign: async (file: File): Promise<{ message: string; campaignId: string }> => {
+  uploadCampaign: async (file: File, reminderType: string): Promise<{ message: string; campaignId: string }> => {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("reminder_type", reminderType);
 
     const response = await api.post("/api/admin/outreach/upload", formData, {
       headers: {

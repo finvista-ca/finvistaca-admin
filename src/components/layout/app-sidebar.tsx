@@ -72,8 +72,8 @@ export function AppSidebar() {
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader className="py-4">
         <div className="flex items-center gap-2 px-4">
-          <div className="w-8 h-8 rounded bg-primary flex items-center justify-center text-primary-foreground font-bold">
-            F
+          <div className="w-8 h-8 rounded flex items-center justify-center overflow-hidden bg-white">
+            <img src="/finvista-logo.jpeg" alt="Finvista" className="w-full h-full object-contain" />
           </div>
           <span className="font-bold text-lg tracking-tight group-data-[collapsible=icon]:hidden">
             Finvista Admin

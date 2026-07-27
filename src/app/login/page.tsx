@@ -45,8 +45,8 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-2 text-center pb-6">
-          <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
-            <Lock className="w-6 h-6" />
+          <div className="mx-auto mb-4 flex justify-center w-24 h-24 rounded-2xl overflow-hidden bg-white shadow-sm border">
+            <img src="/finvista-logo.jpeg" alt="Finvista Logo" className="w-full h-full object-contain" />
           </div>
           <CardTitle className="text-2xl font-bold tracking-tight">Finvista Admin</CardTitle>
           <CardDescription>
