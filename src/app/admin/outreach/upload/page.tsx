@@ -4,7 +4,7 @@
 
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { UploadCloud, FileSpreadsheet, X, CheckCircle, AlertCircle } from "lucide-react";
+import { UploadCloud, FileSpreadsheet, X, CheckCircle, AlertCircle, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -46,6 +46,12 @@ export default function UploadCampaignPage() {
 
   const removeFile = () => {
     setFile(null);
+  };
+
+  // Handle template download based on selected dropdown value
+  const handleDownloadTemplate = () => {
+    window.location.href = `/api/admin/outreach/download-template?type=${selectedTemplate}`;
+    toast.success("Downloading template file...");
   };
 
   const handleUpload = async () => {
@@ -101,27 +107,37 @@ export default function UploadCampaignPage() {
         <CardHeader>
           <CardTitle>Upload Recipients List</CardTitle>
           <CardDescription>
-            Select the compliance template type and upload your .csv or .xlsx recipient list.
+            Select the compliance template type, download the correct format, and upload your filled .xlsx recipient list.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Native HTML Select Dropdown (Zero type mismatch issues) */}
-          <div className="space-y-2">
+          {/* Template Selection & Download Section */}
+          <div className="space-y-2 border p-4 rounded-xl bg-muted/20">
             <Label htmlFor="template-select" className="text-sm font-medium">
               Select Compliance Template Type
             </Label>
-            <select
-              id="template-select"
-              value={selectedTemplate}
-              onChange={(e) => setSelectedTemplate(e.target.value)}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {TEMPLATE_OPTIONS.map((tmpl) => (
-                <option key={tmpl.id} value={tmpl.id}>
-                  {tmpl.label}
-                </option>
-              ))}
-            </select>
+            <div className="flex gap-3">
+              <select
+                id="template-select"
+                value={selectedTemplate}
+                onChange={(e) => setSelectedTemplate(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {TEMPLATE_OPTIONS.map((tmpl) => (
+                  <option key={tmpl.id} value={tmpl.id}>
+                    {tmpl.label}
+                  </option>
+                ))}
+              </select>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleDownloadTemplate}
+                className="whitespace-nowrap"
+              >
+                <Download className="w-4 h-4 mr-2" /> Download Template
+              </Button>
+            </div>
           </div>
 
           {/* Dropzone Area */}
@@ -135,7 +151,7 @@ export default function UploadCampaignPage() {
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto mb-4">
                 <UploadCloud className="w-8 h-8" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Drag & drop your file here</h3>
+              <h3 className="text-lg font-semibold mb-2">Drag & drop your filled template here</h3>
               <p className="text-sm text-muted-foreground mb-4">or click to browse from your computer</p>
               <p className="text-xs text-muted-foreground/75 uppercase font-medium tracking-wider">Supported formats: .CSV, .XLSX</p>
             </div>
@@ -162,7 +178,7 @@ export default function UploadCampaignPage() {
           <CardFooter className="bg-muted/30 border-t px-6 py-4 flex justify-between items-center">
             <div className="flex items-center text-sm text-muted-foreground">
               <AlertCircle className="w-4 h-4 mr-2 text-amber-500" />
-              Please ensure your file columns match the template variables (`var1`, `var2`, etc.).
+              Ensure your headers match the downloaded template structure.
             </div>
             <Button size="lg" onClick={handleUpload}>
               Queue Campaign <CheckCircle className="w-4 h-4 ml-2" />
