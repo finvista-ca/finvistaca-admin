@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -15,10 +16,19 @@ function DeliveryStatusContent() {
   const searchParams = useSearchParams();
   const campaignId = searchParams?.get("campaignId") || undefined;
   
+  const [selectedStatus, setSelectedStatus] = useState("ALL");
+
   const { data = [], isLoading, isError, error } = useQuery({
     queryKey: ["deliveryStatus", campaignId],
     queryFn: () => OutreachService.getDeliveryStatus(campaignId)
   });
+
+  const filteredData = useMemo(() => {
+    if (selectedStatus === "ALL") return data;
+    return data.filter((item) => 
+      item.status?.toLowerCase() === selectedStatus.toLowerCase()
+    );
+  }, [data, selectedStatus]);
 
   const columns: ColumnDef<DeliveryStatus>[] = [
     {
@@ -43,11 +53,6 @@ function DeliveryStatusContent() {
       accessorKey: "sentTime",
       header: "Sent Time",
       cell: ({ row }) => row.original.sentTime ? new Date(row.original.sentTime).toLocaleString() : "-",
-    },
-    {
-      accessorKey: "deliveredTime",
-      header: "Delivered Time",
-      cell: ({ row }) => row.original.deliveredTime ? new Date(row.original.deliveredTime).toLocaleString() : "-",
     },
   ];
 
@@ -88,13 +93,31 @@ function DeliveryStatusContent() {
             <p className="text-muted-foreground mt-1">Filtering by Campaign ID: {campaignId}</p>
           )}
         </div>
+
+        <div className="flex items-center gap-2">
+          <label htmlFor="status-filter" className="text-sm font-medium text-muted-foreground">
+            Filter Status:
+          </label>
+          <select
+            id="status-filter"
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className="border border-input bg-background text-foreground rounded-md px-3 py-1.5 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+          >
+            <option value="ALL">All Statuses</option>
+            <option value="Sent">Sent</option>
+            <option value="Processing">Processing</option>
+            <option value="Pending">Pending</option>
+            <option value="Failed">Failed</option>
+          </select>
+        </div>
       </div>
 
       <Card className="shadow-sm">
         <div className="p-1">
           <DataTable 
             columns={columns} 
-            data={data} 
+            data={filteredData} 
             searchKey="phone" 
             searchPlaceholder="Search by phone number..."
           />

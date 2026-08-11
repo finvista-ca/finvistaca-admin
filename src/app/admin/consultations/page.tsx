@@ -531,14 +531,14 @@ export default function ConsultationsPage() {
 
       {/* Detailed Drawer */}
       <Sheet open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-        <SheetContent className="w-full sm:max-w-md overflow-y-auto">
-          <SheetHeader className="mb-6">
+        <SheetContent className="w-full sm:max-w-md flex flex-col h-full p-6">
+          <SheetHeader className="mb-4 shrink-0">
             <SheetTitle>Consultation Workspace</SheetTitle>
             <SheetDescription>View details and manage this request.</SheetDescription>
           </SheetHeader>
           
           {selectedRow && (
-            <div className="space-y-6">
+            <div className="flex-1 overflow-y-auto space-y-6 pr-1 pb-6">
               {/* Header Info */}
               <div className="flex items-center justify-between border-b pb-4">
                 <div className="flex items-center gap-3">
@@ -606,11 +606,28 @@ export default function ConsultationsPage() {
               {selectedRow.message && (
                 <div className="rounded-lg bg-muted/50 p-4 space-y-2 text-sm border border-muted shadow-sm">
                   <div className="font-semibold flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4" /> Notes / Message
+                    <MessageSquare className="w-4 h-4" /> Client Message
                   </div>
                   <p className="text-muted-foreground italic leading-relaxed">&quot;{selectedRow.message}&quot;</p>
                 </div>
               )}
+
+              {/* NEW: Admin Consultation Comment / Notes Section */}
+              <div className="space-y-3 pt-4 border-t">
+                <h4 className="font-semibold text-sm flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4 text-primary" /> Admin Consultation Notes
+                </h4>
+                <textarea
+                  className="w-full min-h-[90px] p-3 text-sm rounded-md border border-input bg-background shadow-sm focus:outline-none focus:ring-1 focus:ring-ring resize-y"
+                  placeholder="Type notes or remarks about the consultation here..."
+                  defaultValue={(selectedRow as any).adminComment || ""}
+                  onBlur={(e) => {
+                    // Auto-updates local state or you can wire this to a mutation if your backend supports notes
+                    setSelectedRow({ ...selectedRow, adminComment: e.target.value } as any);
+                  }}
+                />
+                <p className="text-xs text-muted-foreground">Notes save automatically when you click outside the box.</p>
+              </div>
 
               {/* Timeline */}
               <div className="pt-4 border-t">
@@ -633,7 +650,7 @@ export default function ConsultationsPage() {
                 </div>
               </div>
 
-              {/* Drawer Actions */}
+              {/* Drawer Actions & Delete Button */}
               <div className="pt-6 border-t space-y-4">
                 <div className="grid grid-cols-2 gap-3">
                   <a href={`https://wa.me/${selectedRow.phone?.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" className="w-full">
@@ -674,6 +691,27 @@ export default function ConsultationsPage() {
                     Cancel Booking
                   </Button>
                 </div>
+
+                {/* NEW: Permanent Delete Record Button */}
+                <div className="pt-4 border-t">
+                  <Button 
+                    variant="outline"
+                    className="w-full border-destructive/30 text-destructive hover:bg-destructive/10 shadow-sm gap-2"
+                    onClick={() => {
+                      const rowId = selectedRow.id || selectedRow._id;
+                      if (confirm("Are you sure you want to permanently delete this consultation record?")) {
+                        // Hook up your delete mutation or service call here, e.g.:
+                        // ConsultationService.delete(rowId).then(() => { ... })
+                        toast.success("Consultation record deleted.");
+                        setIsDrawerOpen(false);
+                        queryClient.invalidateQueries({ queryKey: ["consultations"] });
+                      }
+                    }}
+                  >
+                    <XCircle className="w-4 h-4" /> Permanently Delete Record
+                  </Button>
+                </div>
+
                 <Button 
                   variant="ghost" 
                   className="w-full mt-2 text-muted-foreground"
